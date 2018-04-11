@@ -82,5 +82,5 @@ namespace TableRush
     {
       spriteBatch.Draw(squareTexture, squarePosition, null, Color.White, 0f, new Vector2(squareTexture.Width / 2, squareTexture.Height / 2), Vector2.One, SpriteEffects.None, 0f);
     }
-  } 
+  }
 }

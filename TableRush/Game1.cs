@@ -5,8 +5,6 @@ using System;
 
 namespace TableRush.Desktop
 {
-
-
   /// <summary>
   /// This is the main type for your game.
   /// </summary>
@@ -30,24 +28,24 @@ namespace TableRush.Desktop
       Content.RootDirectory = "Content";
     }
 
-		protected override void OnActivated(object sender, EventArgs args)
-		{
+    protected override void OnActivated(object sender, EventArgs args)
+    {
       Window.Title = "Table Rush";
       base.OnActivated(sender, args);
-		}
+    }
 
-		protected override void OnDeactivated(object sender, EventArgs args)
-		{
+    protected override void OnDeactivated(object sender, EventArgs args)
+    {
       Window.Title = "Table Rush (Not Active)";
       base.OnDeactivated(sender, args);
-		}
-		/// <summary>
-		/// Allows the game to perform any initialization it needs to before starting to run.
-		/// This is where it can query for any required services and load any non-graphic
-		/// related content.  Calling base.Initialize will enumerate through any components
-		/// and initialize them as well.
-		/// </summary>
-		protected override void Initialize()
+    }
+    /// <summary>
+    /// Allows the game to perform any initialization it needs to before starting to run.
+    /// This is where it can query for any required services and load any non-graphic
+    /// related content.  Calling base.Initialize will enumerate through any components
+    /// and initialize them as well.
+    /// </summary>
+    protected override void Initialize()
     {
       playerPosition = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
       for (int i = 0; i < NPC_COUNT; i++) { npcs[i] = new NPC(graphics); }
