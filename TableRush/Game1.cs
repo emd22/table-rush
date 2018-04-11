@@ -5,6 +5,8 @@ using System;
 
 namespace TableRush.Desktop
 {
+
+
   /// <summary>
   /// This is the main type for your game.
   /// </summary>
@@ -15,14 +17,15 @@ namespace TableRush.Desktop
     Texture2D ballTexture;
     Vector2 ballPosition;
     float ballSpeed;
-    Texture2D squareTexture;
-    Vector2 squarePosition;
-    float squareSpeed;
-    Random rnd = new Random();
+    NPC firstNPC;
+    NPC secondNPC;
 
     public Game1()
     {
       graphics = new GraphicsDeviceManager(this);
+      //graphics.IsFullScreen = true;
+      //graphics.PreferredBackBufferHeight = 800;
+      //graphics.PreferredBackBufferWidth = 1280;
       Content.RootDirectory = "Content";
     }
 
@@ -34,12 +37,11 @@ namespace TableRush.Desktop
     /// </summary>
     protected override void Initialize()
     {
-      // TODO: Add your initialization logic here
       ballPosition = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
       ballSpeed = 100f;
 
-      squarePosition = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-      squareSpeed = 200f;
+      firstNPC = new NPC(graphics);
+      secondNPC = new NPC(graphics);
 
       base.Initialize();
     }
@@ -53,10 +55,11 @@ namespace TableRush.Desktop
       // Create a new SpriteBatch, which can be used to draw textures.
       spriteBatch = new SpriteBatch(GraphicsDevice);
 
-      // TODO: use this.Content to load your game content here
       ballTexture = Content.Load<Texture2D>("ball");
-      squareTexture = Content.Load<Texture2D>("square");
 
+      firstNPC.Load(Content.Load<Texture2D>("ball"));
+      secondNPC.Load(Content.Load<Texture2D>("ball"));
+         
     }
 
     /// <summary>
@@ -78,7 +81,6 @@ namespace TableRush.Desktop
       if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
         Exit();
 
-      // TODO: Add your update logic here
       var kstate = Keyboard.GetState();
 
       if (kstate.IsKeyDown(Keys.Up))
@@ -96,28 +98,8 @@ namespace TableRush.Desktop
       ballPosition.X = Math.Min(Math.Max(ballTexture.Width / 2, ballPosition.X), graphics.PreferredBackBufferWidth - ballTexture.Width / 2);
       ballPosition.Y = Math.Min(Math.Max(ballTexture.Height / 2, ballPosition.Y), graphics.PreferredBackBufferHeight - ballTexture.Height / 2);
 
-
-      var random_turn = rnd.Next(1, 5);
-
-      if (random_turn == 1)
-      {
-        squarePosition.Y -= squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-      }
-      if (random_turn == 2)
-      {
-        squarePosition.Y += squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-      }
-      if (random_turn == 3)
-      {
-        squarePosition.X -= squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-      }
-      if (random_turn == 4)
-      {
-        squarePosition.X += squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-      }
-
-      squarePosition.X = Math.Min(Math.Max(squareTexture.Width / 2, squarePosition.X), graphics.PreferredBackBufferWidth - squareTexture.Width / 2);
-      squarePosition.Y = Math.Min(Math.Max(squareTexture.Height / 2, squarePosition.Y), graphics.PreferredBackBufferHeight - squareTexture.Height / 2);
+      firstNPC.Update(gameTime, graphics);
+      secondNPC.Update(gameTime, graphics);
 
       base.Update(gameTime);
     }
@@ -130,11 +112,12 @@ namespace TableRush.Desktop
     {
       GraphicsDevice.Clear(Color.CornflowerBlue);
 
-      // TODO: Add your drawing code here
       spriteBatch.Begin();
 
       spriteBatch.Draw(ballTexture, ballPosition, null, Color.White, 0f, new Vector2(ballTexture.Width / 2, ballTexture.Height / 2), Vector2.One, SpriteEffects.None, 0f);
-      spriteBatch.Draw(squareTexture, squarePosition, null, Color.White, 0f, new Vector2(squareTexture.Width / 2, squareTexture.Height / 2), Vector2.One, SpriteEffects.None, 0f);
+
+      firstNPC.Draw(spriteBatch);
+      secondNPC.Draw(spriteBatch);
 
       spriteBatch.End();
 
