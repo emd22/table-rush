@@ -12,37 +12,45 @@ namespace TableRush.Desktop
   /// </summary>
   public class Game1 : Game
   {
+    public const float PLAYER_SPEED = 75f;
+    public const int NPC_COUNT = 10;
+
     GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
-    Texture2D ballTexture;
-    Vector2 ballPosition;
-    float ballSpeed;
-    NPC firstNPC;
-    NPC secondNPC;
+    Texture2D playerTexture;
+    Vector2 playerPosition;
+    Random rnd = new Random();
+    NPC[] npcs = new NPC[NPC_COUNT];
 
     public Game1()
     {
       graphics = new GraphicsDeviceManager(this);
-      //graphics.IsFullScreen = true;
-      //graphics.PreferredBackBufferHeight = 800;
-      //graphics.PreferredBackBufferWidth = 1280;
+      graphics.IsFullScreen = true;
+      graphics.PreferredBackBufferWidth = 1280; graphics.PreferredBackBufferHeight = 800;
       Content.RootDirectory = "Content";
     }
 
-    /// <summary>
-    /// Allows the game to perform any initialization it needs to before starting to run.
-    /// This is where it can query for any required services and load any non-graphic
-    /// related content.  Calling base.Initialize will enumerate through any components
-    /// and initialize them as well.
-    /// </summary>
-    protected override void Initialize()
+		protected override void OnActivated(object sender, EventArgs args)
+		{
+      Window.Title = "Table Rush";
+      base.OnActivated(sender, args);
+		}
+
+		protected override void OnDeactivated(object sender, EventArgs args)
+		{
+      Window.Title = "Table Rush (Not Active)";
+      base.OnDeactivated(sender, args);
+		}
+		/// <summary>
+		/// Allows the game to perform any initialization it needs to before starting to run.
+		/// This is where it can query for any required services and load any non-graphic
+		/// related content.  Calling base.Initialize will enumerate through any components
+		/// and initialize them as well.
+		/// </summary>
+		protected override void Initialize()
     {
-      ballPosition = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-      ballSpeed = 100f;
-
-      firstNPC = new NPC(graphics);
-      secondNPC = new NPC(graphics);
-
+      playerPosition = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+      for (int i = 0; i < NPC_COUNT; i++) { npcs[i] = new NPC(graphics); }
       base.Initialize();
     }
 
@@ -54,12 +62,8 @@ namespace TableRush.Desktop
     {
       // Create a new SpriteBatch, which can be used to draw textures.
       spriteBatch = new SpriteBatch(GraphicsDevice);
-
-      ballTexture = Content.Load<Texture2D>("ball");
-
-      firstNPC.Load(Content.Load<Texture2D>("ball"));
-      secondNPC.Load(Content.Load<Texture2D>("ball"));
-         
+      playerTexture = Content.Load<Texture2D>("ball");
+      foreach (NPC npc in npcs) { npc.Load(Content.Load<Texture2D>("ball")); }
     }
 
     /// <summary>
@@ -78,32 +82,33 @@ namespace TableRush.Desktop
     /// <param name="gameTime">Provides a snapshot of timing values.</param>
     protected override void Update(GameTime gameTime)
     {
-      if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-        Exit();
+      if (IsActive)
+      {
+        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+          Exit();
 
-      var kstate = Keyboard.GetState();
+        var kstate = Keyboard.GetState();
 
-      if (kstate.IsKeyDown(Keys.Up))
-        ballPosition.Y -= ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        if (kstate.IsKeyDown(Keys.Up))
+          playerPosition.Y -= PLAYER_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-      if (kstate.IsKeyDown(Keys.Down))
-        ballPosition.Y += ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        if (kstate.IsKeyDown(Keys.Down))
+          playerPosition.Y += PLAYER_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-      if (kstate.IsKeyDown(Keys.Left))
-        ballPosition.X -= ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        if (kstate.IsKeyDown(Keys.Left))
+          playerPosition.X -= PLAYER_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-      if (kstate.IsKeyDown(Keys.Right))
-        ballPosition.X += ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        if (kstate.IsKeyDown(Keys.Right))
+          playerPosition.X += PLAYER_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-      ballPosition.X = Math.Min(Math.Max(ballTexture.Width / 2, ballPosition.X), graphics.PreferredBackBufferWidth - ballTexture.Width / 2);
-      ballPosition.Y = Math.Min(Math.Max(ballTexture.Height / 2, ballPosition.Y), graphics.PreferredBackBufferHeight - ballTexture.Height / 2);
+        playerPosition.X = Math.Min(Math.Max(playerTexture.Width / 2, playerPosition.X), graphics.PreferredBackBufferWidth - playerTexture.Width / 2);
+        playerPosition.Y = Math.Min(Math.Max(playerTexture.Height / 2, playerPosition.Y), graphics.PreferredBackBufferHeight - playerTexture.Height / 2);
 
-      firstNPC.Update(gameTime, graphics);
-      secondNPC.Update(gameTime, graphics);
+        foreach (NPC npc in npcs) { npc.Update(gameTime, graphics, rnd); }
 
-      base.Update(gameTime);
+        base.Update(gameTime);
+      }
     }
-
     /// <summary>
     /// This is called when the game should draw itself.
     /// </summary>
@@ -113,12 +118,8 @@ namespace TableRush.Desktop
       GraphicsDevice.Clear(Color.CornflowerBlue);
 
       spriteBatch.Begin();
-
-      spriteBatch.Draw(ballTexture, ballPosition, null, Color.White, 0f, new Vector2(ballTexture.Width / 2, ballTexture.Height / 2), Vector2.One, SpriteEffects.None, 0f);
-
-      firstNPC.Draw(spriteBatch);
-      secondNPC.Draw(spriteBatch);
-
+      spriteBatch.Draw(playerTexture, playerPosition, null, Color.White, 0f, new Vector2(playerTexture.Width / 2, playerTexture.Height / 2), Vector2.One, SpriteEffects.None, 0f);
+      foreach (NPC npc in npcs) { npc.Draw(spriteBatch); }
       spriteBatch.End();
 
       base.Draw(gameTime);

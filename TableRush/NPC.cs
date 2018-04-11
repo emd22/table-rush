@@ -8,15 +8,15 @@ namespace TableRush
   {
     private Texture2D squareTexture;
     private Vector2 squarePosition;
-    private float squareSpeed;
-    private int squareMovementCounter;
-    private int squareMovementDirection;
+    private float npcSpeed;
+    private int npcMovementCounter;
+    private int npcMovementDirection;
 
     public NPC(GraphicsDeviceManager graphics)
     {
       squarePosition = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-      squareSpeed = 40f;
-      squareMovementCounter = 0;
+      npcSpeed = 40f;
+      npcMovementCounter = 0;
     }
 
     public void Load(Texture2D squareTexture)
@@ -26,55 +26,55 @@ namespace TableRush
 
     public void Update(GameTime gameTime, GraphicsDeviceManager graphics, Random rnd)
     {
-      if (squareMovementCounter == 60)
+      if (npcMovementCounter == 60)
       {
-        squareMovementDirection = rnd.Next(1, 10);
-        squareMovementCounter = 0;
+        npcMovementDirection = rnd.Next(1, 11);
+        npcMovementCounter = 0;
       }
 
-      if (squareMovementDirection == 1)
+      if (npcMovementDirection == 1)
       {
-        squarePosition.Y -= squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        squarePosition.Y -= npcSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
       }
-      if (squareMovementDirection == 2)
+      if (npcMovementDirection == 2)
       {
-        squarePosition.Y += squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        squarePosition.Y += npcSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
       }
-      if (squareMovementDirection == 3)
+      if (npcMovementDirection == 3)
       {
-        squarePosition.X -= squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        squarePosition.X -= npcSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
       }
-      if (squareMovementDirection == 4)
+      if (npcMovementDirection == 4)
       {
-        squarePosition.X += squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        squarePosition.X += npcSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
       }
 
       // diagonals
-      if (squareMovementDirection == 5)
+      if (npcMovementDirection == 5)
       {
-        squarePosition.Y += squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        squarePosition.X += squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        squarePosition.Y += npcSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        squarePosition.X += npcSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
       }
-      if (squareMovementDirection == 6)
+      if (npcMovementDirection == 6)
       {
-        squarePosition.Y -= squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        squarePosition.X -= squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        squarePosition.Y -= npcSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        squarePosition.X -= npcSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
       }
-      if (squareMovementDirection == 7)
+      if (npcMovementDirection == 7)
       {
-        squarePosition.Y += squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        squarePosition.X -= squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        squarePosition.Y += npcSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        squarePosition.X -= npcSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
       }
-      if (squareMovementDirection == 8)
+      if (npcMovementDirection == 8)
       {
-        squarePosition.Y -= squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        squarePosition.X += squareSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        squarePosition.Y -= npcSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        squarePosition.X += npcSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
       }
 
       squarePosition.X = Math.Min(Math.Max(squareTexture.Width / 2, squarePosition.X), graphics.PreferredBackBufferWidth - squareTexture.Width / 2);
       squarePosition.Y = Math.Min(Math.Max(squareTexture.Height / 2, squarePosition.Y), graphics.PreferredBackBufferHeight - squareTexture.Height / 2);
 
-      squareMovementCounter++;
+      npcMovementCounter++;
 
     }
 
