@@ -11,12 +11,11 @@ namespace TableRush
     private float squareSpeed;
     private int squareMovementCounter;
     private int squareMovementDirection;
-    Random rnd = new Random();
 
     public NPC(GraphicsDeviceManager graphics)
     {
       squarePosition = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-      squareSpeed = 75f;
+      squareSpeed = 40f;
       squareMovementCounter = 0;
     }
 
@@ -25,7 +24,7 @@ namespace TableRush
       this.squareTexture = squareTexture;
     }
 
-    public void Update(GameTime gameTime, GraphicsDeviceManager graphics)
+    public void Update(GameTime gameTime, GraphicsDeviceManager graphics, Random rnd)
     {
       if (squareMovementCounter == 60)
       {
