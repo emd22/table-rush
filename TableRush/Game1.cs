@@ -17,6 +17,7 @@ namespace TableRush.Desktop
     SpriteBatch spriteBatch;
     Texture2D playerTexture;
     Vector2 playerPosition;
+    PhysicsObject playerPhysics;
     Random rnd = new Random();
     NPC[] npcs = new NPC[NPC_COUNT];
 
@@ -50,6 +51,7 @@ namespace TableRush.Desktop
       playerPosition = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
       for (int i = 0; i < NPC_COUNT; i++) { npcs[i] = new NPC(graphics); }
       base.Initialize();
+      playerPhysics = new PhysicsObject(playerTexture.Width, playerTexture.Height, 0f, 0f);
     }
 
     /// <summary>
@@ -61,7 +63,7 @@ namespace TableRush.Desktop
       // Create a new SpriteBatch, which can be used to draw textures.
       spriteBatch = new SpriteBatch(GraphicsDevice);
       playerTexture = Content.Load<Texture2D>("ball");
-      foreach (NPC npc in npcs) { npc.Load(Content.Load<Texture2D>("ball")); }
+      foreach (NPC npc in npcs) { npc.Load(Content.Load<Texture2D>("ball"), GraphicsDevice); }
     }
 
     /// <summary>
@@ -101,6 +103,9 @@ namespace TableRush.Desktop
 
         playerPosition.X = Math.Min(Math.Max(playerTexture.Width / 2, playerPosition.X), graphics.PreferredBackBufferWidth - playerTexture.Width / 2);
         playerPosition.Y = Math.Min(Math.Max(playerTexture.Height / 2, playerPosition.Y), graphics.PreferredBackBufferHeight - playerTexture.Height / 2);
+
+        playerPhysics.x = playerPosition.X - (playerTexture.Width / 2);
+        playerPhysics.y = playerPosition.Y - (playerTexture.Height / 2);
 
         foreach (NPC npc in npcs) { npc.Update(gameTime, graphics, rnd); }
 
